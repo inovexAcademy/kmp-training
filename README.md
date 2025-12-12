@@ -1,4 +1,5 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# KMP Training
+This repository contains several code samples and exercises used in a Kotlin/KMP training.
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
