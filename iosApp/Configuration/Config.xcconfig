@@ -1,0 +1,7 @@
+TEAM_ID=
+
+PRODUCT_NAME=kmp-training
+PRODUCT_BUNDLE_IDENTIFIER=de.inovex.kmp_training.kmp-training$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
