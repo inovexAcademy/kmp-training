@@ -13,7 +13,45 @@ This training is designed to teach Kotlin Multiplatform development through hand
 1. **Follow the exercises in order** - Each exercise builds on the previous one
 2. **Look for TODO comments** - Search for `TODO: Exercise` in the codebase
 3. **Run the app** after each exercise to verify your implementation
-4. **If stuck**: Run `git show solution:<filepath>` to peek at the solution
+4. **Run tests** to verify your implementation is correct (see below)
+5. **If stuck**: Run `git show solution:<filepath>` to peek at the solution
+
+## Verifying Your Implementation with Tests
+
+Unit tests are available on the `solution` branch. To verify your implementation:
+
+### Option 1: Run tests from solution branch (recommended)
+```bash
+# Stash your current work
+git stash
+
+# Checkout solution branch (which has both tests and implementations)
+git checkout solution
+
+# Copy your implementation files from stash
+git stash show -p | git apply --reject
+
+# Run the tests
+./gradlew :core:database:allTests :core:network:allTests :core:data:allTests
+
+# Go back to main and restore your work
+git checkout main
+git stash pop
+```
+
+### Option 2: Quick verification using cherry-pick
+```bash
+# Run specific module tests after copying test files from solution
+git show solution:core/database/src/commonTest/kotlin/de/inovex/kmp_training/core/database/entity/TagEntityTest.kt > temp_test.kt
+# Then move to correct location and run tests
+```
+
+### Test Files Available (on solution branch)
+| Exercise | Test File | Command |
+|----------|-----------|---------|
+| Exercise 2 | `TagEntityTest.kt` | `./gradlew :core:database:allTests` |
+| Exercise 5 | `TagDtoTest.kt` | `./gradlew :core:network:allTests` |
+| Exercise 7 | `TagRepositoryTest.kt` | `./gradlew :core:data:allTests` |
 
 ---
 
@@ -57,6 +95,9 @@ Create a Room Entity for storing tags in the database.
 ### Hints
 - Look at `TaskEntity.kt` and `CategoryEntity.kt` for reference
 - Import `Tag` from `de.inovex.kmp_training.core.model.Tag`
+
+### Verify
+Run `TagEntityTest` from the solution branch (see "Verifying Your Implementation" section above).
 
 ---
 
@@ -127,6 +168,9 @@ Create a Data Transfer Object for tag API communication.
    )
    ```
 
+### Verify
+Run `TagDtoTest` from the solution branch (see "Verifying Your Implementation" section above).
+
 ---
 
 ## Exercise 6: Ktor - API Methods (25 min)
@@ -180,6 +224,9 @@ Create a repository that combines database and network operations.
 ### Hints
 - Convert between domain models and entities/DTOs
 - Use `map { }` on flows to convert lists
+
+### Verify
+Run `TagRepositoryTest` from the solution branch (see "Verifying Your Implementation" section above).
 
 ---
 
