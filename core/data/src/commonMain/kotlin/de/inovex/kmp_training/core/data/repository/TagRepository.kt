@@ -4,7 +4,7 @@ import de.inovex.kmp_training.core.model.Tag
 import kotlinx.coroutines.flow.Flow
 
 // ============================================================================
-// TODO: Exercise 7 - This interface is provided for you
+// TODO: Exercise 1 - This interface is provided for you
 // ============================================================================
 //
 // The interface is complete. Your task is to implement TagRepositoryImpl.

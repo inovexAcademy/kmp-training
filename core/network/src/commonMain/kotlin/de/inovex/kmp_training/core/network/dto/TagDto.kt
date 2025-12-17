@@ -4,7 +4,7 @@ import de.inovex.kmp_training.core.model.Tag
 import kotlinx.serialization.Serializable
 
 // ============================================================================
-// TODO: Exercise 5 - Implement TagDto
+// TODO: Exercise 1 - Implement TagDto
 // ============================================================================
 //
 // This skeleton compiles but tests will FAIL until you implement the TODOs.
@@ -27,22 +27,22 @@ data class TagDto(
     val colorHex: String
 ) {
     /**
-     * TODO: Exercise 5 - Implement this function
+     * TODO: Exercise 1 - Implement this function
      * 
      * Convert this TagDto to a Tag domain model.
      */
     fun toDomain(): Tag {
-        TODO("Exercise 5: Implement toDomain() - Convert TagDto to Tag")
+        TODO("Exercise 1: Implement toDomain() - Convert TagDto to Tag")
     }
     
     companion object {
         /**
-         * TODO: Exercise 5 - Implement this function
+         * TODO: Exercise 1 - Implement this function
          * 
          * Convert a Tag domain model to a TagDto.
          */
         fun fromDomain(tag: Tag): TagDto {
-            TODO("Exercise 5: Implement fromDomain() - Convert Tag to TagDto")
+            TODO("Exercise 1: Implement fromDomain() - Convert Tag to TagDto")
         }
     }
 }

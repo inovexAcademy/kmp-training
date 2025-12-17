@@ -7,7 +7,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * Tests for Exercise 7: TagRepository
+ * Tests for Exercise 1: TagRepository
  * 
  * Run these tests to verify your implementation:
  * ./gradlew :core:data:allTests

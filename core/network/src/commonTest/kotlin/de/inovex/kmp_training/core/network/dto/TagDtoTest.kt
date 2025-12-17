@@ -8,7 +8,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * Tests for Exercise 5: TagDto
+ * Tests for Exercise 1: TagDto
  * 
  * Run these tests to verify your implementation:
  * ./gradlew :core:network:allTests

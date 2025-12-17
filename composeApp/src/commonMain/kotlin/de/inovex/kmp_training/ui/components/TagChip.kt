@@ -1,6 +1,6 @@
 package de.inovex.kmp_training.ui.components
 
-// TODO: Exercise 9 - Create TagChip Component
+// TODO: Exercise 2 - Create TagChip Component
 //
 // A reusable Compose component for displaying and selecting tags.
 //
