@@ -1,6 +1,31 @@
-# KMP Task Manager
+# KMP Task Manager - Training Edition
 
 A cross-platform Task Manager application built with Kotlin Multiplatform (KMP) demonstrating stable KMP technologies for mobile development.
+
+## 🎓 Training Information
+
+This repository is set up for a 7-hour KMP training workshop.
+
+### Branch Structure
+
+| Branch | Purpose |
+|--------|---------|
+| `main` | **Exercises** - Contains TODO skeletons for hands-on learning |
+| `solution` | **Complete implementation** - Reference for instructors and stuck participants |
+
+### Getting Started
+
+1. Clone this repository (you'll be on `main` branch)
+2. Open the project in Android Studio or IntelliJ IDEA
+3. Read `EXERCISES.md` for detailed exercise instructions
+4. Work through the exercises in order
+
+### If You Get Stuck
+
+- View solution for a specific file: `git show solution:<filepath>`
+- Compare your work: `git diff main solution -- <filepath>`
+- Reset a file: `git checkout -- <filepath>`
+- Reset everything: `git checkout .`
 
 ## Technologies Used
 
