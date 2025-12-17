@@ -12,8 +12,25 @@ This training is designed to teach Kotlin Multiplatform development through hand
 
 1. **Follow the exercises in order** - Each exercise builds on the previous one
 2. **Look for TODO comments** - Search for `TODO: Exercise` in the codebase
-3. **Run the app** after each exercise to verify your implementation
-4. **If stuck**: Run `git show solution:<filepath>` to peek at the solution
+3. **Run tests** after each exercise to verify your implementation
+4. **Run the app** to see your changes in action
+5. **If stuck**: Run `git show solution:<filepath>` to peek at the solution
+
+## Running Tests
+
+Each exercise has corresponding unit tests. Run them to verify your implementation:
+
+```bash
+# Test all modules
+./gradlew allTests
+
+# Test specific modules
+./gradlew :core:database:cleanAllTests :core:database:allTests --info    # Exercise 2-3
+./gradlew :core:network:cleanAllTests :core:network:allTests --info      # Exercise 5-6
+./gradlew :core:data:cleanAllTests :core:data:allTests --info            # Exercise 7
+```
+
+**Tip**: You can run tests from Android Studio by right-clicking on a test file and selecting "Run".
 
 ---
 
@@ -57,6 +74,12 @@ Create a Room Entity for storing tags in the database.
 ### Hints
 - Look at `TaskEntity.kt` and `CategoryEntity.kt` for reference
 - Import `Tag` from `de.inovex.kmp_training.core.model.Tag`
+
+### Verify with Tests
+```bash
+./gradlew :core:database:cleanAllTests :core:database:allTests --info
+```
+Look for `TagEntityTest` - all tests should pass.
 
 ---
 
@@ -127,6 +150,12 @@ Create a Data Transfer Object for tag API communication.
    )
    ```
 
+### Verify with Tests
+```bash
+./gradlew :core:network:cleanAllTests :core:network:allTests --info
+```
+Look for `TagDtoTest` - all tests should pass.
+
 ---
 
 ## Exercise 6: Ktor - API Methods (25 min)
@@ -180,6 +209,12 @@ Create a repository that combines database and network operations.
 ### Hints
 - Convert between domain models and entities/DTOs
 - Use `map { }` on flows to convert lists
+
+### Verify with Tests
+```bash
+./gradlew :core:data:cleanAllTests :core:data:allTests --info
+```
+Look for `TagRepositoryTest` - all tests should pass.
 
 ---
 
