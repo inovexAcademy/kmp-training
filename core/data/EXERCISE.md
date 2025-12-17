@@ -10,7 +10,7 @@ Repository pattern exercises for KMP.
 
 ---
 
-## Exercise 7: Repository - TagRepositoryImpl (20 min)
+## Exercise 1: Repository - TagRepositoryImpl (20 min)
 
 **File**: `src/commonMain/kotlin/de/inovex/kmp_training/core/data/repository/TagRepositoryImpl.kt`
 

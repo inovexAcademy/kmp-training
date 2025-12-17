@@ -13,7 +13,7 @@ Ktor networking exercises for KMP.
 
 ---
 
-## Exercise 5: Ktor - TagDto (20 min)
+## Exercise 1: Ktor - TagDto (20 min)
 
 **File**: `src/commonMain/kotlin/de/inovex/kmp_training/core/network/dto/TagDto.kt`
 
@@ -38,7 +38,7 @@ All `TagDtoTest` tests should pass.
 
 ---
 
-## Exercise 6: Ktor - API Methods (25 min)
+## Exercise 2: Ktor - API Methods (25 min)
 
 **File**: `src/commonMain/kotlin/de/inovex/kmp_training/core/network/MockApiService.kt`
 

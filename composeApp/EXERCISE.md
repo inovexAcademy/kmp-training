@@ -4,7 +4,7 @@ Koin dependency injection and Compose UI exercises.
 
 ---
 
-## Exercise 8: Koin - DI Wiring (15 min)
+## Exercise 1: Koin - DI Wiring (15 min)
 
 **Files**:
 - `src/commonMain/kotlin/de/inovex/kmp_training/di/DatabaseModule.kt`
@@ -34,7 +34,7 @@ After this exercise, the app should compile without errors:
 
 ---
 
-## Exercise 9: Compose - TagChip Component (20 min)
+## Exercise 2: Compose - TagChip Component (20 min)
 
 **File**: `src/commonMain/kotlin/de/inovex/kmp_training/ui/components/TagChip.kt`
 
@@ -62,7 +62,7 @@ Create a reusable Compose component for displaying tags.
 
 ---
 
-## Exercise 10: Compose - Tag Selection in TaskDetailScreen (25 min)
+## Exercise 3: Compose - Tag Selection in TaskDetailScreen (25 min)
 
 **File**: `src/commonMain/kotlin/de/inovex/kmp_training/ui/screens/taskdetail/TaskDetailScreen.kt`
 
