@@ -27,8 +27,8 @@ The data class structure and `TagListResponse` are provided. Implement:
 2. `fromDomain(tag: Tag)` - Convert Tag model to TagDto
 
 ### Hints
-- The structure is similar to TagEntity
-- Map each field directly (id -> id, name -> name, colorHex -> colorHex)
+- Look at `TaskDto.kt` for reference
+- The pattern is similar to what you did in TagEntity
 
 ### Verify
 ```bash
@@ -46,37 +46,18 @@ All `TagDtoTest` tests should pass.
 Add tag-related API methods to the mock service.
 
 ### Requirements
-1. Add a mock tags list (like `mockTasks`):
-   ```kotlin
-   private val mockTags = mutableListOf(
-       TagDto(id = 1, name = "Work", colorHex = "#4A90D9"),
-       TagDto(id = 2, name = "Personal", colorHex = "#50C878"),
-       TagDto(id = 3, name = "Urgent", colorHex = "#FF6B6B"),
-       TagDto(id = 4, name = "Home", colorHex = "#FFB347"),
-       TagDto(id = 5, name = "Shopping", colorHex = "#DDA0DD")
-   )
-   ```
+1. Add a private mutable list to store mock tags (similar to `mockTasks`)
 
 2. Implement these suspend functions:
-   - `fetchTags(): TagListResponse`
-   - `fetchTagById(id: Long): TagDto?`
-   - `createTag(tag: TagDto): TagDto`
-   - `deleteTag(id: Long): Boolean`
+   - `fetchTags(): TagListResponse` - Return all tags
+   - `fetchTagById(id: Long): TagDto?` - Find a tag by ID
+   - `createTag(tag: TagDto): TagDto` - Add a new tag
+   - `deleteTag(id: Long): Boolean` - Remove a tag
 
 ### Hints
-- Follow the pattern of existing task methods
-- Use `simulateNetworkCall()` to simulate network delay
-
-### Example Implementation
-```kotlin
-suspend fun fetchTags(): TagListResponse {
-    simulateNetworkCall()
-    return TagListResponse(
-        tags = mockTags.toList(),
-        total = mockTags.size
-    )
-}
-```
+- Study the existing task methods for the pattern
+- Don't forget to call `simulateNetworkCall()` 
+- Use `Tag.PREDEFINED_TAGS` for initial mock data inspiration
 
 ---
 
@@ -87,4 +68,3 @@ Once all tests pass, continue to the next module:
 ```bash
 open ../data/EXERCISE.md
 ```
-

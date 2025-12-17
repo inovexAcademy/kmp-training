@@ -46,7 +46,6 @@ The data class structure is provided. Implement:
 
 ### Hints
 - Look at `TaskEntity.kt` and `CategoryEntity.kt` for reference
-- Map each field directly (id -> id, name -> name, colorHex -> colorHex)
 
 ### Verify
 ```bash
@@ -68,14 +67,14 @@ The TagDao is already implemented. Review it to understand:
 
 1. `@Dao` annotation marks this as a Room DAO
 2. `@Query` executes SQL queries
-3. `@Insert(onConflict = OnConflictStrategy.REPLACE)` handles conflicts
+3. `@Insert` with conflict strategy handles duplicates
 4. `@Delete` removes entities
-5. `Flow<List<T>>` provides reactive updates (no `suspend` needed)
+5. `Flow<List<T>>` provides reactive updates
 6. `suspend fun` is used for one-time operations
 
 ### Discussion Points
 - Why does `getAllTags()` return `Flow` but `getTagById()` uses `suspend`?
-- What does `OnConflictStrategy.REPLACE` do?
+- What does the conflict strategy do?
 - How does Room generate the implementation?
 
 ---
@@ -88,9 +87,9 @@ The TagDao is already implemented. Review it to understand:
 Register the new entity and DAO in the database.
 
 ### Requirements
-1. Add `TagEntity::class` to the `entities` array in `@Database`
-2. Add `abstract fun tagDao(): TagDao`
-3. Increment the database version (e.g., from 1 to 2)
+1. Add the TagEntity to the entities array in `@Database`
+2. Add an abstract function to expose the TagDao
+3. Increment the database version
 
 ### Note
 After changing the database version, you may need to uninstall the app to clear old data.
@@ -104,4 +103,3 @@ Once all tests pass, continue to the next module:
 ```bash
 open ../network/EXERCISE.md
 ```
-

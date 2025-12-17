@@ -15,25 +15,16 @@ Wire up the new Tag dependencies in Koin modules.
 
 ### Requirements
 
-#### In `DatabaseModule.kt`:
-Add a provider for TagDao:
+1. **In `DatabaseModule.kt`**: Add a provider for TagDao
+   - Follow the pattern of existing DAO providers
 
-```kotlin
-single { get<TaskDatabase>().tagDao() }
-```
+2. **In `RepositoryModule.kt`**: Add a provider for TagRepository
+   - Follow the pattern of existing repository providers
+   - Don't forget to add the necessary imports
 
-#### In `RepositoryModule.kt`:
-Add a provider for TagRepository:
-
-```kotlin
-single<TagRepository> { TagRepositoryImpl(get(), get()) }
-```
-
-Don't forget to add the imports:
-```kotlin
-import de.inovex.kmp_training.core.data.repository.TagRepository
-import de.inovex.kmp_training.core.data.repository.TagRepositoryImpl
-```
+### Hints
+- Look at how TaskDao and TaskRepository are wired
+- Use `single { }` for singleton instances
 
 ### Verify
 After this exercise, the app should compile without errors:
@@ -51,89 +42,23 @@ After this exercise, the app should compile without errors:
 Create a reusable Compose component for displaying tags.
 
 ### Requirements
-1. Create a `@Composable fun TagChip`:
-   ```kotlin
-   @Composable
-   fun TagChip(
-       tag: Tag,
-       isSelected: Boolean = false,
-       onClick: (() -> Unit)? = null,
-       modifier: Modifier = Modifier
-   )
-   ```
+1. Create a composable function `TagChip` that accepts:
+   - `tag: Tag` - The tag to display
+   - `isSelected: Boolean` - Whether the tag is selected
+   - `onClick: (() -> Unit)?` - Optional click handler
+   - `modifier: Modifier` - Standard modifier
 
-2. Display:
-   - Colored dot based on `tag.colorHex`
-   - Tag name
-   - Check icon when selected (optional)
+2. The component should display:
+   - A colored dot based on `tag.colorHex`
+   - The tag name
+   - A check icon when selected (optional)
 
-3. Use Material 3 styling with rounded corners
-
-### Example Implementation
-```kotlin
-@Composable
-fun TagChip(
-    tag: Tag,
-    isSelected: Boolean = false,
-    onClick: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
-) {
-    val backgroundColor = if (isSelected) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
-    
-    Surface(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
-        color = backgroundColor
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            // Colored dot
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .background(
-                        color = parseHexColor(tag.colorHex),
-                        shape = CircleShape
-                    )
-            )
-            
-            Text(
-                text = tag.name,
-                style = MaterialTheme.typography.labelMedium
-            )
-            
-            if (isSelected) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Selected",
-                    modifier = Modifier.size(14.dp)
-                )
-            }
-        }
-    }
-}
-
-private fun parseHexColor(hex: String): Color {
-    return try {
-        Color(hex.removePrefix("#").toLong(16) or 0xFF000000)
-    } catch (e: Exception) {
-        Color.Gray
-    }
-}
-```
+3. Style with Material 3 and rounded corners
 
 ### Hints
-- Look at `TaskCard.kt` for similar component patterns
-- Use `Surface` with `RoundedCornerShape` for the chip background
-- Handle hex color parsing with a try/catch
+- Look at `TaskCard.kt` for component patterns
+- You'll need to parse the hex color string to a Color
+- Consider using `Surface` or `FilterChip` as the base
 
 ---
 
@@ -144,90 +69,27 @@ private fun parseHexColor(hex: String): Color {
 ### Task
 Add tag selection to the task creation/editing screen.
 
-### Step 1: Update TaskDetailViewModel
+### Requirements
 
-Add to `TaskDetailViewModel.kt`:
+**Step 1: Update TaskDetailViewModel**
+- Add TagRepository as a constructor parameter
+- Add state for selected tag IDs
+- Add state for available tags (from repository)
+- Add a function to toggle tag selection
 
-```kotlin
-// Add TagRepository to constructor
-class TaskDetailViewModel(
-    private val taskRepository: TaskRepository,
-    private val categoryRepository: CategoryRepository,
-    private val tagRepository: TagRepository,  // Add this
-    private val taskId: Long?
-) : ViewModel() {
+**Step 2: Update ViewModelModule**
+- Update the TaskDetailViewModel provider to include TagRepository
 
-    // Add state for tags
-    private val _selectedTagIds = MutableStateFlow<List<Long>>(emptyList())
-    
-    // Add to UI state
-    data class TaskDetailUiState(
-        // ... existing fields ...
-        val selectedTagIds: List<Long> = emptyList(),
-        val availableTags: List<Tag> = emptyList()
-    )
-    
-    // Add toggle function
-    fun onTagToggle(tagId: Long) {
-        val currentTagIds = _selectedTagIds.value.toMutableList()
-        if (currentTagIds.contains(tagId)) {
-            currentTagIds.remove(tagId)
-        } else {
-            currentTagIds.add(tagId)
-        }
-        _selectedTagIds.value = currentTagIds
-    }
-}
-```
+**Step 3: Update TaskDetailScreen**
+- Add a "Tags" section similar to the "Category" section
+- Use `FlowRow` to display available tags
+- Use your TagChip component
+- Handle tag selection/deselection
 
-### Step 2: Update ViewModelModule
-
-In `di/ViewModelModule.kt`, update the TaskDetailViewModel provider:
-
-```kotlin
-viewModel { (taskId: Long?) -> 
-    TaskDetailViewModel(get(), get(), get(), taskId) 
-}
-```
-
-### Step 3: Add Tags Section to TaskDetailScreen
-
-Add after the Category section:
-
-```kotlin
-// Tags selector
-if (uiState.availableTags.isNotEmpty()) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        ),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Tags",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                uiState.availableTags.forEach { tag ->
-                    TagChip(
-                        tag = tag,
-                        isSelected = uiState.selectedTagIds.contains(tag.id),
-                        onClick = { viewModel.onTagToggle(tag.id) }
-                    )
-                }
-            }
-        }
-    }
-}
-```
+### Hints
+- Study how categories are handled in the ViewModel and Screen
+- Use `FlowRow` from `androidx.compose.foundation.layout`
+- The pattern is similar to category selection but allows multiple selections
 
 ---
 
@@ -267,4 +129,3 @@ You have completed the KMP Training exercises. You've learned:
 - Compose Multiplatform for UI
 - The repository pattern for data management
 - expect/actual for platform-specific code
-

@@ -10,7 +10,7 @@ Repository pattern exercises for KMP.
 
 ---
 
-## Exercise 7: Koin - TagRepository (20 min)
+## Exercise 7: Repository - TagRepositoryImpl (20 min)
 
 **File**: `src/commonMain/kotlin/de/inovex/kmp_training/core/data/repository/TagRepositoryImpl.kt`
 
@@ -22,55 +22,28 @@ Complete the TagRepositoryImpl by replacing the `TODO()` calls.
 - `TagRepositoryImpl` class structure is provided
 
 ### Requirements
-Implement these methods in `TagRepositoryImpl`:
+Implement these methods:
 
-### 1. `getAllTags()`
-Get all tags from the database as a Flow.
+1. **`getAllTags()`** - Get all tags from the database as a Flow
+   - Use the DAO to get entities
+   - Transform the Flow to convert entities to domain models
 
-```kotlin
-override fun getAllTags(): Flow<List<Tag>> {
-    return tagDao.getAllTags().map { entities ->
-        entities.map { it.toDomain() }
-    }
-}
-```
+2. **`insertTag(tag: Tag)`** - Insert a tag into the database
+   - Convert the domain model to an entity
+   - Use the DAO to insert
 
-### 2. `insertTag(tag: Tag)`
-Insert a tag into the database.
+3. **`deleteTag(tag: Tag)`** - Delete a tag from the database
+   - Convert the domain model to an entity
+   - Use the DAO to delete
 
-```kotlin
-override suspend fun insertTag(tag: Tag): Long {
-    return tagDao.insertTag(TagEntity.fromDomain(tag))
-}
-```
-
-### 3. `deleteTag(tag: Tag)`
-Delete a tag from the database.
-
-```kotlin
-override suspend fun deleteTag(tag: Tag) {
-    tagDao.deleteTag(TagEntity.fromDomain(tag))
-}
-```
-
-### 4. `fetchRemoteTags()`
-Fetch tags from the API and return a Result.
-
-```kotlin
-override suspend fun fetchRemoteTags(): Result<List<Tag>> {
-    return try {
-        val response = mockApiService.fetchTags()
-        Result.success(response.tags.map { it.toDomain() })
-    } catch (e: Exception) {
-        Result.failure(e)
-    }
-}
-```
+4. **`fetchRemoteTags()`** - Fetch tags from the API
+   - Call the mock API service
+   - Return `Result.success()` with the tags, or `Result.failure()` on error
 
 ### Hints
-- Import `TagEntity` from the database module
+- Look at `TaskRepositoryImpl.kt` for the pattern
 - Use `.map { }` to transform Flow contents
-- Look at `TaskRepositoryImpl.kt` for reference
+- Wrap API calls in try/catch for error handling
 
 ### Verify
 ```bash
@@ -87,4 +60,3 @@ Once complete, continue to the composeApp module:
 ```bash
 open ../../composeApp/EXERCISE.md
 ```
-
