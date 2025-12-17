@@ -8,7 +8,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModelOf(::TaskListViewModel)
-    viewModel { (taskId: Long?) -> TaskDetailViewModel(get(), get(), taskId) }
+    viewModel { TaskListViewModel(get(), get(), get()) }
+    viewModel { (taskId: Long?) -> TaskDetailViewModel(get(), get(), get(), taskId) }
     viewModelOf(::CategoriesViewModel)
 }

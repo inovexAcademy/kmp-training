@@ -14,6 +14,7 @@ data class TaskDto(
     val dueDate: Long?,
     val priority: Int,
     val categoryId: Long?,
+    val tagIds: List<Long> = emptyList(),
     val createdAt: Long
 ) {
     fun toDomain(): Task = Task(
@@ -24,6 +25,7 @@ data class TaskDto(
         dueDate = dueDate?.let { Instant.fromEpochMilliseconds(it) },
         priority = Priority.fromLevel(priority),
         categoryId = categoryId,
+        tagIds = tagIds,
         createdAt = Instant.fromEpochMilliseconds(createdAt)
     )
     
@@ -36,6 +38,7 @@ data class TaskDto(
             dueDate = task.dueDate?.toEpochMilliseconds(),
             priority = task.priority.level,
             categoryId = task.categoryId,
+            tagIds = task.tagIds,
             createdAt = task.createdAt.toEpochMilliseconds()
         )
     }

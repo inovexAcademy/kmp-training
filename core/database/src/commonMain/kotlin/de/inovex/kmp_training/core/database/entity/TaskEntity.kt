@@ -31,7 +31,7 @@ data class TaskEntity(
     val categoryId: Long?,
     val createdAt: Long // Stored as epoch milliseconds
 ) {
-    fun toDomain(): Task = Task(
+    fun toDomain(tagIds: List<Long> = emptyList()): Task = Task(
         id = id,
         title = title,
         description = description,
@@ -39,6 +39,7 @@ data class TaskEntity(
         dueDate = dueDate?.let { Instant.fromEpochMilliseconds(it) },
         priority = Priority.fromLevel(priority),
         categoryId = categoryId,
+        tagIds = tagIds,
         createdAt = Instant.fromEpochMilliseconds(createdAt)
     )
     

@@ -3,9 +3,11 @@ package de.inovex.kmp_training.ui.screens.taskdetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.inovex.kmp_training.core.data.repository.CategoryRepository
+import de.inovex.kmp_training.core.data.repository.TagRepository
 import de.inovex.kmp_training.core.data.repository.TaskRepository
 import de.inovex.kmp_training.core.model.Category
 import de.inovex.kmp_training.core.model.Priority
+import de.inovex.kmp_training.core.model.Tag
 import de.inovex.kmp_training.core.model.Task
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,7 +25,9 @@ data class TaskDetailUiState(
     val dueDate: Instant? = null,
     val priority: Priority = Priority.MEDIUM,
     val categoryId: Long? = null,
+    val selectedTagIds: List<Long> = emptyList(),
     val categories: List<Category> = emptyList(),
+    val availableTags: List<Tag> = emptyList(),
     val isEditing: Boolean = false,
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
@@ -37,6 +41,7 @@ data class TaskDetailUiState(
 class TaskDetailViewModel(
     private val taskRepository: TaskRepository,
     private val categoryRepository: CategoryRepository,
+    private val tagRepository: TagRepository,
     private val taskId: Long?
 ) : ViewModel() {
     
@@ -46,6 +51,7 @@ class TaskDetailViewModel(
     private val _dueDate = MutableStateFlow<Instant?>(null)
     private val _priority = MutableStateFlow(Priority.MEDIUM)
     private val _categoryId = MutableStateFlow<Long?>(null)
+    private val _selectedTagIds = MutableStateFlow<List<Long>>(emptyList())
     private val _isLoading = MutableStateFlow(false)
     private val _isSaving = MutableStateFlow(false)
     private val _error = MutableStateFlow<String?>(null)
@@ -86,20 +92,46 @@ class TaskDetailViewModel(
         UiStatus(isLoading, isSaving, error, savedSuccessfully)
     }
     
+    private data class SelectionState(
+        val categoryId: Long?,
+        val selectedTagIds: List<Long>
+    )
+    
+    private val selectionStateFlow = combine(
+        _categoryId,
+        _selectedTagIds
+    ) { categoryId, selectedTagIds ->
+        SelectionState(categoryId, selectedTagIds)
+    }
+    
+    private data class ReferenceData(
+        val categories: List<Category>,
+        val availableTags: List<Tag>
+    )
+    
+    private val referenceDataFlow = combine(
+        categoryRepository.getAllCategories(),
+        tagRepository.getAllTags()
+    ) { categories, tags ->
+        ReferenceData(categories, tags)
+    }
+    
     val uiState: StateFlow<TaskDetailUiState> = combine(
         taskContentFlow,
-        _categoryId,
-        categoryRepository.getAllCategories(),
+        selectionStateFlow,
+        referenceDataFlow,
         uiStatusFlow
-    ) { content, categoryId, categories, status ->
+    ) { content, selection, referenceData, status ->
         TaskDetailUiState(
             title = content.title,
             description = content.description,
             isCompleted = content.isCompleted,
             dueDate = content.dueDate,
             priority = content.priority,
-            categoryId = categoryId,
-            categories = categories,
+            categoryId = selection.categoryId,
+            selectedTagIds = selection.selectedTagIds,
+            categories = referenceData.categories,
+            availableTags = referenceData.availableTags,
             isEditing = taskId != null,
             isLoading = status.isLoading,
             isSaving = status.isSaving,
@@ -129,6 +161,7 @@ class TaskDetailViewModel(
                 _dueDate.value = task.dueDate
                 _priority.value = task.priority
                 _categoryId.value = task.categoryId
+                _selectedTagIds.value = task.tagIds
             }
             _isLoading.value = false
         }
@@ -158,6 +191,16 @@ class TaskDetailViewModel(
         _categoryId.value = categoryId
     }
     
+    fun onTagToggle(tagId: Long) {
+        val currentTagIds = _selectedTagIds.value.toMutableList()
+        if (currentTagIds.contains(tagId)) {
+            currentTagIds.remove(tagId)
+        } else {
+            currentTagIds.add(tagId)
+        }
+        _selectedTagIds.value = currentTagIds
+    }
+    
     fun saveTask() {
         if (_title.value.isBlank()) {
             _error.value = "Title cannot be empty"
@@ -177,6 +220,7 @@ class TaskDetailViewModel(
                     dueDate = _dueDate.value,
                     priority = _priority.value,
                     categoryId = _categoryId.value,
+                    tagIds = _selectedTagIds.value,
                     createdAt = Clock.System.now()
                 )
                 

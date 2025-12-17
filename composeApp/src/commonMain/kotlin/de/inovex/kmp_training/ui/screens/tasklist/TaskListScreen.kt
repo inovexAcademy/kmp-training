@@ -214,6 +214,7 @@ fun TaskListScreen(
                         TaskCard(
                             task = task,
                             category = category,
+                            tags = uiState.getTagsForTask(task),
                             onTaskClick = { onNavigateToTaskDetail(task.id) },
                             onToggleCompletion = { viewModel.toggleTaskCompletion(task) },
                             onDelete = { viewModel.deleteTask(task) }

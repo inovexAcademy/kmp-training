@@ -3,9 +3,11 @@ package de.inovex.kmp_training.ui.screens.tasklist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.inovex.kmp_training.core.data.repository.CategoryRepository
+import de.inovex.kmp_training.core.data.repository.TagRepository
 import de.inovex.kmp_training.core.data.repository.TaskRepository
 import de.inovex.kmp_training.core.model.Category
 import de.inovex.kmp_training.core.model.Priority
+import de.inovex.kmp_training.core.model.Tag
 import de.inovex.kmp_training.core.model.Task
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,18 +35,25 @@ data class FilterState(
 data class TaskListUiState(
     val tasks: List<Task> = emptyList(),
     val categories: List<Category> = emptyList(),
+    val tags: List<Tag> = emptyList(),
     val searchQuery: String = "",
     val filterState: FilterState = FilterState(),
     val sortOption: SortOption = SortOption.CREATED_DATE,
     val isLoading: Boolean = false,
     val isSyncing: Boolean = false,
     val error: String? = null
-)
+) {
+    // Helper to get tags for a specific task
+    fun getTagsForTask(task: Task): List<Tag> {
+        return tags.filter { it.id in task.tagIds }
+    }
+}
 
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class TaskListViewModel(
     private val taskRepository: TaskRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val tagRepository: TagRepository
 ) : ViewModel() {
     
     private val _searchQuery = MutableStateFlow("")
@@ -70,13 +79,20 @@ class TaskListViewModel(
         }
     }
     
+    // Combine reference data (categories and tags)
+    private val referenceDataFlow = combine(
+        categoryRepository.getAllCategories(),
+        tagRepository.getAllTags()
+    ) { categories, tags -> Pair(categories, tags) }
+    
     val uiState: StateFlow<TaskListUiState> = combine(
         tasksFlow,
-        categoryRepository.getAllCategories(),
+        referenceDataFlow,
         _searchQuery,
         _filterState,
         combine(_sortOption, _isSyncing, _error) { sort, syncing, error -> Triple(sort, syncing, error) }
-    ) { tasks, categories, searchQuery, filterState, extras ->
+    ) { tasks, referenceData, searchQuery, filterState, extras ->
+        val (categories, tags) = referenceData
         val (sortOption, isSyncing, error) = extras
         
         val filteredTasks = tasks
@@ -96,6 +112,7 @@ class TaskListViewModel(
         TaskListUiState(
             tasks = filteredTasks,
             categories = categories,
+            tags = tags,
             searchQuery = searchQuery,
             filterState = filterState,
             sortOption = sortOption,

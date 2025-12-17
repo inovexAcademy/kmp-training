@@ -5,19 +5,28 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import de.inovex.kmp_training.core.database.dao.CategoryDao
+import de.inovex.kmp_training.core.database.dao.TagDao
 import de.inovex.kmp_training.core.database.dao.TaskDao
 import de.inovex.kmp_training.core.database.entity.CategoryEntity
+import de.inovex.kmp_training.core.database.entity.TagEntity
 import de.inovex.kmp_training.core.database.entity.TaskEntity
+import de.inovex.kmp_training.core.database.entity.TaskTagCrossRef
 
 @Database(
-    entities = [TaskEntity::class, CategoryEntity::class],
-    version = 1,
+    entities = [
+        TaskEntity::class, 
+        CategoryEntity::class, 
+        TagEntity::class,
+        TaskTagCrossRef::class
+    ],
+    version = 2,
     exportSchema = true
 )
 @ConstructedBy(TaskDatabaseConstructor::class)
 abstract class TaskDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun tagDao(): TagDao
     
     companion object {
         const val DATABASE_NAME = "task_database.db"

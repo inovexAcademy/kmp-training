@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import de.inovex.kmp_training.core.model.Priority
+import de.inovex.kmp_training.ui.components.TagChip
 import de.inovex.kmp_training.ui.theme.PriorityHigh
 import de.inovex.kmp_training.ui.theme.PriorityLow
 import de.inovex.kmp_training.ui.theme.PriorityMedium
@@ -308,6 +309,42 @@ fun TaskDetailScreen(
                                         colorHex = category.colorHex,
                                         isSelected = uiState.categoryId == category.id,
                                         onClick = { viewModel.onCategoryChange(category.id) }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Tags selector
+                if (uiState.availableTags.isNotEmpty()) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(
+                                text = "Tags",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                uiState.availableTags.forEach { tag ->
+                                    TagChip(
+                                        tag = tag,
+                                        isSelected = uiState.selectedTagIds.contains(tag.id),
+                                        onClick = { viewModel.onTagToggle(tag.id) }
                                     )
                                 }
                             }

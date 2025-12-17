@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.inovex.kmp_training.core.model.Category
 import de.inovex.kmp_training.core.model.Priority
+import de.inovex.kmp_training.core.model.Tag
 import de.inovex.kmp_training.core.model.Task
 import de.inovex.kmp_training.ui.theme.PriorityHigh
 import de.inovex.kmp_training.ui.theme.PriorityLow
@@ -53,6 +54,7 @@ import kotlinx.datetime.toLocalDateTime
 fun TaskCard(
     task: Task,
     category: Category?,
+    tags: List<Tag> = emptyList(),
     onTaskClick: () -> Unit,
     onToggleCompletion: () -> Unit,
     onDelete: () -> Unit,
@@ -181,6 +183,26 @@ fun TaskCard(
                         // Due date
                         task.dueDate?.let { dueDate ->
                             DueDateChip(dueDate = dueDate)
+                        }
+                    }
+                    
+                    // Display tags if present
+                    if (tags.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            tags.take(3).forEach { tag ->
+                                TagChipCompact(tag = tag)
+                            }
+                            if (tags.size > 3) {
+                                Text(
+                                    text = "+${tags.size - 3}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
                 }
