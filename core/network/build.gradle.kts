@@ -36,6 +36,10 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
         }
         
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+        
         androidMain.dependencies {
             implementation(libs.ktor.client.cio)
         }

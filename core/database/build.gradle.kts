@@ -34,6 +34,10 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
         }
         
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+        
         androidMain.dependencies {
             // Android-specific Room dependencies if needed
         }

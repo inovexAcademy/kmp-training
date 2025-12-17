@@ -1,73 +1,72 @@
 package de.inovex.kmp_training.core.data.repository
 
-// TODO: Exercise 7b - Create TagRepositoryImpl
+import de.inovex.kmp_training.core.database.dao.TagDao
+import de.inovex.kmp_training.core.model.Tag
+import de.inovex.kmp_training.core.network.MockApiService
+import kotlinx.coroutines.flow.Flow
+
+// ============================================================================
+// TODO: Exercise 7 - Implement TagRepositoryImpl
+// ============================================================================
 //
-// Implementation of TagRepository that combines database and network operations.
+// This skeleton compiles but tests will FAIL until you implement the TODOs.
 //
-// Requirements:
-// 1. Import necessary types:
-//    import de.inovex.kmp_training.core.database.dao.TagDao
-//    import de.inovex.kmp_training.core.database.entity.TagEntity
-//    import de.inovex.kmp_training.core.model.Tag
-//    import de.inovex.kmp_training.core.network.MockApiService
-//    import kotlinx.coroutines.flow.Flow
-//    import kotlinx.coroutines.flow.map
-//
-// 2. Create a class that implements TagRepository
-//
-// 3. Take TagDao and MockApiService as constructor parameters
-//
-// 4. Implement all interface methods:
-//
-//    a) getAllTags(): Use tagDao.getAllTags() and map entities to domain models
-//       - Use .map { entities -> entities.map { it.toDomain() } }
-//
-//    b) insertTag(tag: Tag): Convert to entity and insert
-//       - Use TagEntity.fromDomain(tag) to convert
-//       - Call tagDao.insertTag(entity)
-//
-//    c) deleteTag(tag: Tag): Convert to entity and delete
-//
-//    d) fetchRemoteTags(): Fetch from API, save to DB, return result
-//       - Call mockApiService.fetchTags()
-//       - Convert DTOs to entities and save to database
-//       - Return Result.success or Result.failure
+// Your tasks:
+// 1. Implement getAllTags() - get tags from database as Flow
+// 2. Implement insertTag() - insert tag into database
+// 3. Implement deleteTag() - delete tag from database  
+// 4. Implement fetchRemoteTags() - fetch from API, save to DB
 //
 // Hints:
 // - Look at TaskRepositoryImpl.kt for reference
-// - Use try/catch for the network call
+// - Use tagDao methods and convert between entities/domain models
+// - Use try/catch for network calls
 //
-// Example:
-// class TagRepositoryImpl(
-//     private val tagDao: TagDao,
-//     private val mockApiService: MockApiService
-// ) : TagRepository {
-//     
-//     override fun getAllTags(): Flow<List<Tag>> {
-//         return tagDao.getAllTags().map { entities ->
-//             entities.map { it.toDomain() }
-//         }
-//     }
-//     
-//     override suspend fun insertTag(tag: Tag): Long {
-//         return tagDao.insertTag(TagEntity.fromDomain(tag))
-//     }
-//     
-//     override suspend fun deleteTag(tag: Tag) {
-//         tagDao.deleteTag(TagEntity.fromDomain(tag))
-//     }
-//     
-//     override suspend fun fetchRemoteTags(): Result<List<Tag>> {
-//         return try {
-//             val response = mockApiService.fetchTags()
-//             response.tags.forEach { tagDto ->
-//                 tagDao.insertTag(TagEntity.fromDomain(tagDto.toDomain()))
-//             }
-//             Result.success(response.tags.map { it.toDomain() })
-//         } catch (e: Exception) {
-//             Result.failure(e)
-//         }
-//     }
-// }
-//
-// Implement your solution below this line:
+// Run tests to verify: ./gradlew :core:data:allTests
+// ============================================================================
+
+class TagRepositoryImpl(
+    private val tagDao: TagDao,
+    private val mockApiService: MockApiService
+) : TagRepository {
+    
+    /**
+     * TODO: Exercise 7 - Implement this function
+     * 
+     * Get all tags from the database as a Flow.
+     * Use tagDao.getAllTags() and map entities to domain models.
+     */
+    override fun getAllTags(): Flow<List<Tag>> {
+        TODO("Exercise 7: Implement getAllTags() - Use tagDao.getAllTags() and map to domain")
+    }
+    
+    /**
+     * TODO: Exercise 7 - Implement this function
+     * 
+     * Insert a tag into the database.
+     * Convert the Tag to TagEntity using TagEntity.fromDomain().
+     */
+    override suspend fun insertTag(tag: Tag): Long {
+        TODO("Exercise 7: Implement insertTag() - Convert to entity and insert")
+    }
+    
+    /**
+     * TODO: Exercise 7 - Implement this function
+     * 
+     * Delete a tag from the database.
+     * Convert the Tag to TagEntity and delete.
+     */
+    override suspend fun deleteTag(tag: Tag) {
+        TODO("Exercise 7: Implement deleteTag() - Convert to entity and delete")
+    }
+    
+    /**
+     * TODO: Exercise 7 - Implement this function
+     * 
+     * Fetch tags from the remote API and save to database.
+     * Use try/catch to handle errors gracefully.
+     */
+    override suspend fun fetchRemoteTags(): Result<List<Tag>> {
+        TODO("Exercise 7: Implement fetchRemoteTags() - Fetch from API and save to DB")
+    }
+}

@@ -18,40 +18,26 @@ This training is designed to teach Kotlin Multiplatform development through hand
 
 ## Verifying Your Implementation with Tests
 
-Unit tests are available on the `solution` branch. To verify your implementation:
+Unit tests are included on the `main` branch. Run them to verify your implementation:
 
-### Option 1: Run tests from solution branch (recommended)
 ```bash
-# Stash your current work
-git stash
-
-# Checkout solution branch (which has both tests and implementations)
-git checkout solution
-
-# Copy your implementation files from stash
-git stash show -p | git apply --reject
-
-# Run the tests
+# Run all exercise tests
 ./gradlew :core:database:allTests :core:network:allTests :core:data:allTests
 
-# Go back to main and restore your work
-git checkout main
-git stash pop
+# Or run tests for a specific module
+./gradlew :core:database:allTests    # Exercise 2: TagEntity
+./gradlew :core:network:allTests     # Exercise 5: TagDto
+./gradlew :core:data:allTests        # Exercise 7: TagRepository
 ```
 
-### Option 2: Quick verification using cherry-pick
-```bash
-# Run specific module tests after copying test files from solution
-git show solution:core/database/src/commonTest/kotlin/de/inovex/kmp_training/core/database/entity/TagEntityTest.kt > temp_test.kt
-# Then move to correct location and run tests
-```
+**Before implementation**: Tests will fail with `NotImplementedError`
+**After implementation**: Tests should pass
 
-### Test Files Available (on solution branch)
-| Exercise | Test File | Command |
-|----------|-----------|---------|
-| Exercise 2 | `TagEntityTest.kt` | `./gradlew :core:database:allTests` |
-| Exercise 5 | `TagDtoTest.kt` | `./gradlew :core:network:allTests` |
-| Exercise 7 | `TagRepositoryTest.kt` | `./gradlew :core:data:allTests` |
+| Exercise | Test Class | What It Tests |
+|----------|------------|---------------|
+| Exercise 2 | `TagEntityTest` | `toDomain()` and `fromDomain()` conversions |
+| Exercise 5 | `TagDtoTest` | DTO conversions and JSON serialization |
+| Exercise 7 | `TagRepositoryTest` | Repository interface and Tag model |
 
 ---
 
@@ -78,50 +64,47 @@ Familiarize yourself with the `expect`/`actual` pattern by exploring:
 **File**: `core/database/src/commonMain/kotlin/de/inovex/kmp_training/core/database/entity/TagEntity.kt`
 
 ### Task
-Create a Room Entity for storing tags in the database.
+Complete the TagEntity implementation by replacing the `TODO()` calls.
 
 ### Requirements
-1. Create a `data class TagEntity` with:
-   - `id: Long` - Primary key with auto-generate
-   - `name: String`
-   - `colorHex: String`
+The data class structure is provided. Implement:
 
-2. Annotate with `@Entity(tableName = "tags")`
-
-3. Add a `toDomain()` function to convert to the `Tag` model
-
-4. Add a companion object with `fromDomain(tag: Tag)` function
+1. `toDomain()` - Convert TagEntity to Tag model
+2. `fromDomain(tag: Tag)` - Convert Tag model to TagEntity
 
 ### Hints
 - Look at `TaskEntity.kt` and `CategoryEntity.kt` for reference
-- Import `Tag` from `de.inovex.kmp_training.core.model.Tag`
+- Map each field directly (id → id, name → name, colorHex → colorHex)
 
 ### Verify
-Run `TagEntityTest` from the solution branch (see "Verifying Your Implementation" section above).
+```bash
+./gradlew :core:database:allTests
+```
+All `TagEntityTest` tests should pass.
 
 ---
 
-## Exercise 3: Room Database - TagDao (25 min)
+## Exercise 3: Room Database - TagDao (15 min)
 
 **File**: `core/database/src/commonMain/kotlin/de/inovex/kmp_training/core/database/dao/TagDao.kt`
 
 ### Task
-Create a Data Access Object (DAO) for tag operations.
+Study the provided TagDao interface to understand Room DAO patterns.
 
-### Requirements
-1. Create an interface `TagDao` annotated with `@Dao`
+### Provided Implementation
+The TagDao is already implemented. Review it to understand:
 
-2. Add these functions:
-   - `getAllTags(): Flow<List<TagEntity>>` - Get all tags sorted by name
-   - `getTagById(id: Long): TagEntity?` - Get a single tag (suspend)
-   - `insertTag(tag: TagEntity): Long` - Insert with REPLACE strategy (suspend)
-   - `deleteTag(tag: TagEntity)` - Delete a tag (suspend)
-   - `deleteTagById(id: Long)` - Delete by ID (suspend)
+1. `@Dao` annotation marks this as a Room DAO
+2. `@Query` executes SQL queries
+3. `@Insert(onConflict = OnConflictStrategy.REPLACE)` handles conflicts
+4. `@Delete` removes entities
+5. `Flow<List<T>>` provides reactive updates (no `suspend` needed)
+6. `suspend fun` is used for one-time operations
 
-### Hints
-- Use `@Query`, `@Insert`, `@Delete` annotations
-- Look at `TaskDao.kt` for examples
-- For queries returning Flow, use `fun`; for one-time operations use `suspend fun`
+### Discussion Points
+- Why does `getAllTags()` return `Flow` but `getTagById()` uses `suspend`?
+- What does `OnConflictStrategy.REPLACE` do?
+- How does Room generate the implementation?
 
 ---
 
@@ -147,29 +130,23 @@ After changing the database version, you may need to uninstall the app to clear 
 **File**: `core/network/src/commonMain/kotlin/de/inovex/kmp_training/core/network/dto/TagDto.kt`
 
 ### Task
-Create a Data Transfer Object for tag API communication.
+Complete the TagDto implementation by replacing the `TODO()` calls.
 
 ### Requirements
-1. Create a `data class TagDto` with:
-   - `id: Long`
-   - `name: String`
-   - `colorHex: String`
+The data class structure and `TagListResponse` are provided. Implement:
 
-2. Add `@Serializable` annotation
+1. `toDomain()` - Convert TagDto to Tag model
+2. `fromDomain(tag: Tag)` - Convert Tag model to TagDto
 
-3. Add `toDomain()` and `fromDomain()` functions
-
-4. Create a `TagListResponse` class:
-   ```kotlin
-   @Serializable
-   data class TagListResponse(
-       val tags: List<TagDto>,
-       val total: Int
-   )
-   ```
+### Hints
+- The structure is similar to TagEntity
+- Map each field directly (id → id, name → name, colorHex → colorHex)
 
 ### Verify
-Run `TagDtoTest` from the solution branch (see "Verifying Your Implementation" section above).
+```bash
+./gradlew :core:network:allTests
+```
+All `TagDtoTest` tests should pass.
 
 ---
 
@@ -201,32 +178,43 @@ Add tag-related API methods to the mock service.
 
 ---
 
-## Exercise 7: Koin - TagRepository (15 min)
+## Exercise 7: Koin - TagRepository (20 min)
 
-**Files**:
-- `core/data/src/commonMain/kotlin/de/inovex/kmp_training/core/data/repository/TagRepository.kt`
-- `core/data/src/commonMain/kotlin/de/inovex/kmp_training/core/data/repository/TagRepositoryImpl.kt`
+**File**: `core/data/src/commonMain/kotlin/de/inovex/kmp_training/core/data/repository/TagRepositoryImpl.kt`
 
 ### Task
-Create a repository that combines database and network operations.
+Complete the TagRepositoryImpl by replacing the `TODO()` calls.
+
+### Provided
+- `TagRepository` interface is complete
+- `TagRepositoryImpl` class structure is provided
 
 ### Requirements
-1. Create interface `TagRepository` with:
-   - `getAllTags(): Flow<List<Tag>>`
-   - `insertTag(tag: Tag): Long`
-   - `deleteTag(tag: Tag)`
-   - `fetchRemoteTags(): Result<List<Tag>>`
+Implement these methods in `TagRepositoryImpl`:
 
-2. Create class `TagRepositoryImpl` that:
-   - Takes `TagDao` and `MockApiService` as constructor parameters
-   - Implements all interface methods
+1. `getAllTags()` - Get all tags from database
+   - Use `tagDao.getAllTags()` and map entities to domain models
+
+2. `insertTag(tag: Tag)` - Insert a tag
+   - Convert Tag to TagEntity using `TagEntity.fromDomain(tag)`
+   - Call `tagDao.insertTag(entity)`
+
+3. `deleteTag(tag: Tag)` - Delete a tag
+   - Convert and call `tagDao.deleteTag(entity)`
+
+4. `fetchRemoteTags()` - Fetch from API
+   - Call `mockApiService.fetchTags()`
+   - Use try/catch to return `Result.success()` or `Result.failure()`
 
 ### Hints
-- Convert between domain models and entities/DTOs
-- Use `map { }` on flows to convert lists
+- Use `.map { entities -> entities.map { it.toDomain() } }` on flows
+- Look at `TaskRepositoryImpl.kt` for reference
 
 ### Verify
-Run `TagRepositoryTest` from the solution branch (see "Verifying Your Implementation" section above).
+```bash
+./gradlew :core:data:allTests
+```
+All `TagRepositoryTest` tests should pass.
 
 ---
 

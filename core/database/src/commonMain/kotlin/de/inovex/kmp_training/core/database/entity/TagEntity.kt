@@ -1,52 +1,52 @@
 package de.inovex.kmp_training.core.database.entity
 
-// TODO: Exercise 2 - Create TagEntity
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import de.inovex.kmp_training.core.model.Tag
+
+// ============================================================================
+// TODO: Exercise 2 - Implement TagEntity
+// ============================================================================
 //
-// Room Entity for storing tags in the database.
+// This skeleton compiles but tests will FAIL until you implement the TODOs.
 //
-// Requirements:
-// 1. Import the necessary Room annotations:
-//    import androidx.room.Entity
-//    import androidx.room.PrimaryKey
-//    import de.inovex.kmp_training.core.model.Tag
-//
-// 2. Annotate with @Entity(tableName = "tags")
-//
-// 3. Create a data class with these fields:
-//    - id: Long (PrimaryKey with autoGenerate = true)
-//    - name: String
-//    - colorHex: String
-//
-// 4. Add a toDomain() function that converts this entity to a Tag model
-//
-// 5. Add a companion object with fromDomain(tag: Tag) function
+// Your tasks:
+// 1. Implement toDomain() - convert this entity to a Tag model
+// 2. Implement fromDomain() - convert a Tag model to this entity
 //
 // Hints:
 // - Look at TaskEntity.kt and CategoryEntity.kt for reference
-// - The toDomain() function should return a Tag object
-// - The fromDomain() function should return a TagEntity
+// - The conversion should preserve all field values
 //
-// Example structure:
-// @Entity(tableName = "tags")
-// data class TagEntity(
-//     @PrimaryKey(autoGenerate = true)
-//     val id: Long = 0,
-//     val name: String,
-//     val colorHex: String
-// ) {
-//     fun toDomain(): Tag = Tag(
-//         id = id,
-//         name = name,
-//         colorHex = colorHex
-//     )
-//     
-//     companion object {
-//         fun fromDomain(tag: Tag): TagEntity = TagEntity(
-//             id = tag.id,
-//             name = tag.name,
-//             colorHex = tag.colorHex
-//         )
-//     }
-// }
-//
-// Implement your solution below this line:
+// Run tests to verify: ./gradlew :core:database:allTests
+// ============================================================================
+
+@Entity(tableName = "tags")
+data class TagEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val name: String,
+    val colorHex: String
+) {
+    /**
+     * TODO: Exercise 2 - Implement this function
+     * 
+     * Convert this TagEntity to a Tag domain model.
+     * Map each field from the entity to the corresponding field in Tag.
+     */
+    fun toDomain(): Tag {
+        TODO("Exercise 2: Implement toDomain() - Convert TagEntity to Tag")
+    }
+    
+    companion object {
+        /**
+         * TODO: Exercise 2 - Implement this function
+         * 
+         * Convert a Tag domain model to a TagEntity.
+         * Map each field from Tag to the corresponding field in TagEntity.
+         */
+        fun fromDomain(tag: Tag): TagEntity {
+            TODO("Exercise 2: Implement fromDomain() - Convert Tag to TagEntity")
+        }
+    }
+}
