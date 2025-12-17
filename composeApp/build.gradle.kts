@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -6,6 +5,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -22,6 +22,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            
+            // Export the core modules so they're accessible from iOS
+            export(projects.core.model)
+            export(projects.core.database)
+            export(projects.core.network)
+            export(projects.core.data)
         }
     }
     
@@ -29,8 +35,19 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            
+            // Koin for Android
+            implementation(libs.koin.android)
         }
+        
         commonMain.dependencies {
+            // Core modules
+            api(projects.core.model)
+            api(projects.core.database)
+            api(projects.core.network)
+            api(projects.core.data)
+            
+            // Compose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -39,7 +56,28 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            
+            // Room (needed for DI initialization)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
+            
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            
+            // Ktor (needed for DI initialization)
+            implementation(libs.ktor.client.core)
+            
+            // Navigation
+            implementation(libs.navigation.compose)
+            
+            // Kotlinx
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.coroutines.core)
         }
+        
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
@@ -76,4 +114,3 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
 }
-
